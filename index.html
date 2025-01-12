@@ -1,1 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
 
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Conpatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>こけしgalxマップ</title>
+  <link rel="stylesheet" href="./resource/styles/destyle.css" />
+  <link rel="stylesheet" href="./resource/styles/style.css" />
+
+</head>
+
+<body>
+  <div id="app">
+    <div id="map">
+      <div id="sections">
+        <div class="section" id="earth">Earth</div>
+        <div class="section" id="tokyo-tower">Tokyo Tower</div>
+        <div class="section" id="fuji">Mount Fuji</div>
+        <div class="section" id="space">Outer Space</div>
+      </div>
+      <div id="tower"></div>
+    </div>
+  
+    <!-- サイドパネル: リーダーボード -->
+    <div id="leaderboard-panel">
+      <h2>Leaderboard</h2>
+      <ul id="leaderboard"></ul>
+    </div>
+  
+    <!-- ユーザー情報ポップアップ -->
+    <div id="user-popup" class="hidden">
+      <div class="popup-content">
+        <span id="popup-close">&times;</span>
+        <h2 id="popup-name"></h2>
+        <p id="popup-height"></p>
+        <a id="popup-sns" href="#" target="_blank">Visit SNS</a>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    // Backendlessの設定
+const APP_ID = "YOUR_APP_ID"; // BackendlessアプリID
+const API_KEY = "YOUR_API_KEY"; // REST APIキー
+const DATABASE_URL = `https://api.backendless.com/${APP_ID}/${API_KEY}/data/KokeshiTower`;
+
+// タワー要素
+const tower = document.getElementById("tower");
+// プロフィールパネル
+const profileName = document.getElementById("profile-name");
+const profileHeight = document.getElementById("profile-height");
+
+// こけし1体の高さ（仮定: 100px）
+const KOKESHI_HEIGHT_PX = 100;
+
+// Backendlessからデータを取得する関数
+async function fetchKokeshiData() {
+  try {
+    const response = await fetch(DATABASE_URL);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data from Backendless:", error);
+    return [];
+  }
+}
+
+// こけしを作成してタワーに追加する関数
+function createKokeshi(user) {
+  const kokeshi = document.createElement("div");
+  kokeshi.className = "kokeshi";
+
+  const face = document.createElement("div");
+  face.className = "kokeshi-face";
+  face.style.backgroundImage = `url(${user.pfpUrl})`;
+
+  kokeshi.appendChild(face);
+
+  kokeshi.addEventListener("click", () => {
+    profileName.textContent = `Name: ${user.username}`;
+    profileHeight.textContent = `Height: ${user.height}`;
+  });
+
+  return kokeshi;
+}
+
+// 全体のタワーを構築する関数
+async function buildTower() {
+  const kokeshiData = await fetchKokeshiData();
+
+  // 合計の高さを計算
+  const totalKokeshi = kokeshiData.length;
+  const totalHeightPx = totalKokeshi * KOKESHI_HEIGHT_PX;
+
+  // タワーをリセット
+  tower.innerHTML = "";
+  tower.style.height = `${totalHeightPx}px`;
+
+  // 各こけしをタワーに追加
+  kokeshiData.forEach((user) => {
+    const kokeshi = createKokeshi(user);
+    tower.appendChild(kokeshi);
+  });
+
+  console.log(`Total Kokeshi: ${totalKokeshi}`);
+}
+
+// 初期化処理
+buildTower();
+
+const leaderboard = document.getElementById("leaderboard");
+const popup = document.getElementById("user-popup");
+const popupName = document.getElementById("popup-name");
+const popupHeight = document.getElementById("popup-height");
+const popupSns = document.getElementById("popup-sns");
+const popupClose = document.getElementById("popup-close");
+
+// ユーザーデータ取得＆リーダーボード表示
+async function buildLeaderboard() {
+  const kokeshiData = await fetchKokeshiData();
+
+  // 積み上げ本数（仮に1ユーザー1本とする）でソート
+  const leaderboardData = kokeshiData.sort((a, b) => b.height - a.height);
+
+  leaderboard.innerHTML = "";
+
+  // リーダーボードに各ユーザーを追加
+  leaderboardData.forEach((user) => {
+    const listItem = document.createElement("li");
+
+    const img = document.createElement("img");
+    img.src = user.pfpUrl;
+    img.alt = user.username;
+
+    const span = document.createElement("span");
+    span.textContent = `${user.username} (${user.height})`;
+
+    listItem.appendChild(img);
+    listItem.appendChild(span);
+
+    listItem.addEventListener("click", () => {
+      showPopup(user);
+    });
+
+    leaderboard.appendChild(listItem);
+  });
+}
+
+// ポップアップ表示
+function showPopup(user) {
+  popupName.textContent = user.username;
+  popupHeight.textContent = `Height: ${user.height}`;
+  popupSns.href = user.sns || "#";
+  popupSns.textContent = user.sns ? "Visit SNS" : "No SNS available";
+  popupSns.style.display = user.sns ? "block" : "none";
+
+  popup.classList.remove("hide");
+  popup.classList.add("show");
+}
+
+// ポップアップを閉じる
+popupClose.addEventListener("click", () => {
+  popup.classList.remove("show");
+  popup.classList.add("hide");
+
+  // アニメーション終了後に非表示
+  popup.addEventListener("animationend", () => {
+    if (popup.classList.contains("hide")) {
+      popup.style.display = "none";
+    }
+  }, { once: true });
+});
+
+
+// 初期化処理
+async function init() {
+  await buildTower(); // タワーを構築
+  await buildLeaderboard(); // リーダーボードを構築
+}
+
+init();
+
+  </script>
+</body>
+
+</html>
