@@ -19,19 +19,19 @@ body {
 
 /* Background sections */
 .background-earth {
-  background-image: url('earth.jpg');
+  background-image: url('earth.png');
 }
 
 .background-tokyo-tower {
-  background-image: url('tokyo_tower.jpg');
+  background-image: url('tokyo_tower.png');
 }
 
 .background-mt-fuji {
-  background-image: url('mt_fuji.jpg');
+  background-image: url('mt_fuji.png');
 }
 
 .background-space {
-  background-image: url('space.jpg');
+  background-image: url('space.png');
 }
 
 /* Kokeshi */
