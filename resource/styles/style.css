@@ -1,190 +1,58 @@
-
-/* 全体設定 */
+/* General styling */
 body {
   margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  background-color: #87ceeb; /* 空色 */
+  overflow: hidden;
 }
 
-#app {
-  display: flex;
-}
-
-/* 縦スクロールマップ */
-#map {
-  position: relative;
-  flex: 1;
+#tower-panel {
   height: 100vh;
   overflow-y: auto;
+  text-align: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
 }
 
-#sections {
-  position: relative;
-  width: 100%;
+/* Background sections */
+.background-earth {
+  background-image: url('earth.jpg');
 }
 
-.section {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
+.background-tokyo-tower {
+  background-image: url('tokyo_tower.jpg');
 }
 
-#earth {
-  background: #4caf50;
+.background-mt-fuji {
+  background-image: url('mt_fuji.jpg');
 }
 
-#tokyo-tower {
-  background: #f44336;
+.background-space {
+  background-image: url('space.jpg');
 }
 
-#fuji {
-  background: #2196f3;
-}
-
-#space {
-  background: #000;
-}
-
-/* タワーのスタイル */
-#tower {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0;
-  width: 60px;
-  display: flex;
-  flex-direction: column-reverse; /* 下から上に積む */
-  align-items: center;
-}
-
-/* こけしのスタイル */
+/* Kokeshi */
 .kokeshi {
-  width: 60px;
+  width: 50px;
   height: 100px;
-  margin: 0;
-  background-color: #f0e68c;
-  border: 2px solid #000;
+  background-color: #c48f65;
+  border: 2px solid #8b5a3c;
   border-radius: 10px;
+  margin: 5px auto;
   position: relative;
 }
 
 .kokeshi-face {
   width: 40px;
   height: 40px;
+  background-color: #f4d6b0;
   border-radius: 50%;
-  background-color: white;
-  border: 2px solid black;
+  border: 2px solid #8b5a3c;
   position: absolute;
   top: 5px;
   left: 50%;
   transform: translateX(-50%);
-  background-size: cover;
-  background-position: center;
-}
-
-/* プロフィールパネル */
-#profile-panel {
-  width: 30%;
-  background-color: white;
-  border-left: 2px solid #ccc;
-  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-}
-
-#profile-panel h2 {
-  text-align: center;
-}
-
-#profile-panel p {
-  margin: 10px 0;
-}
-/* リーダーボードパネル */
-#leaderboard-panel {
-  width: 30%;
-  background-color: white;
-  border-left: 2px solid #ccc;
-  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  overflow-y: auto;
-}
-
-#leaderboard-panel h2 {
-  text-align: center;
-}
-
-#leaderboard {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#leaderboard li {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
-}
-
-#leaderboard img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-/* フェードイン/アウト用アニメーション */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -55%);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-  to {
-    opacity: 0;
-    transform: translate(-50%, -55%);
-  }
-}
-
-/* ポップアップ */
-#user-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  padding: 20px;
-  width: 300px;
-  z-index: 1000;
-  display: none; /* 初期状態は非表示 */
-  opacity: 0;
-}
-
-#user-popup.show {
-  display: block;
-  animation: fadeIn 0.3s ease forwards;
-}
-
-#user-popup.hide {
-  animation: fadeOut 0.3s ease forwards;
-  /* アニメーションが完了した後に非表示にする */
-  animation-fill-mode: forwards;
 }
