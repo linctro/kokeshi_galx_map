@@ -80,9 +80,16 @@
         }
 
         const data = await response.json();
-        buildKokeshiTower(data.stuck);
+
+        const kokeshiCount = data.kokeshi_count;
+
+        if (kokeshiCount !== undefined) {
+          buildKokeshiTower(kokeshiCount);
+        } else {
+          console.error("kokeshi_count field is missing in the fetched data.");
+        }
       } catch (error) {
-        console.error("Failed to fetch stuck data:", error);
+        console.error("Failed to fetch kokeshi data:", error);
       }
     }
 

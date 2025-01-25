@@ -19,25 +19,25 @@ body {
 
 /* Background sections */
 .background-earth {
-  background-image: url('earth.png');
+  background-image: url('resource/images/ground.png');
 }
 
 .background-tokyo-tower {
-  background-image: url('tokyo_tower.png');
+  background-image: url('resource/images/mountain.png');
 }
 
 .background-mt-fuji {
-  background-image: url('mt_fuji.png');
+  background-image: url('resource/images/ozon.png');
 }
 
 .background-space {
-  background-image: url('space.png');
+  background-image: url('resource/images/space.png');
 }
 
 /* Kokeshi */
 .kokeshi {
-  width: 50px;
-  height: 100px;
+  width: 25px;
+  height: 50px;
   background-color: #c48f65;
   border: 2px solid #8b5a3c;
   border-radius: 10px;
@@ -46,8 +46,8 @@ body {
 }
 
 .kokeshi-face {
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
   background-color: #f4d6b0;
   border-radius: 50%;
   border: 2px solid #8b5a3c;
