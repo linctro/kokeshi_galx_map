@@ -12,8 +12,7 @@
 </head>
 
 <body>
-  <div id="tower-panel">
-    <h1>Kokeshi Tower</h1>
+  <div id="tower-container">
     <div id="kokeshi-tower"></div>
   </div>
 
@@ -23,78 +22,94 @@
     const API_KEY = "2AD3A779-0802-4F6E-BC18-ED592E6BEAC1"; // REST APIキー
     //const objectId = "791E7404-AC37-4598-9B04-044FD5A2C9F9";
 
-    const DATABASE_URL = `https://api.backendless.com/${APP_ID}/${API_KEY}/data/tower`;
+    // タワーを構築する関数 (遅延表示を考慮)
+    async function fetchAndBuildKokeshiTower(objectId) {
+      console.log("Fetching data for objectId:", objectId); // ここで確認
 
-    const leaderboardPanel = document.getElementById("leaderboard");
-    const towerPanel = document.getElementById("tower-panel");
-    const towerContainer = document.getElementById("kokeshi-tower");
-    const popup = document.getElementById("user-popup");
-    const popupName = document.getElementById("popup-name");
-    const popupHeight = document.getElementById("popup-height");
-    const popupSns = document.getElementById("popup-sns");
-    const popupClose = document.getElementById("popup-close");
-
-    const BACKGROUND_THRESHOLDS = [
-      { limit: 100, className: "background-earth" },
-      { limit: 300, className: "background-tokyo-tower" },
-      { limit: 600, className: "background-mt-fuji" },
-      { limit: Infinity, className: "background-space" },
-    ];
-
-
-    // Build kokeshi tower
-    function buildKokeshiTower(count) {
-      towerContainer.innerHTML = "";
-      for (let i = 0; i < count; i++) {
-        const kokeshi = document.createElement("div");
-        kokeshi.classList.add("kokeshi");
-
-        const face = document.createElement("div");
-        face.classList.add("kokeshi-face");
-
-        kokeshi.appendChild(face);
-        towerContainer.appendChild(kokeshi);
+      const towerContainer = document.getElementById('tower-container');
+      console.log("Tower container:", towerContainer);
+      if (!towerContainer) {
+        console.error("Error: tower-container が見つかりません！");
       }
 
-      updateBackground(count);
-    }
+      const kokeshiTower = document.getElementById('kokeshi-tower');
 
-    function updateBackground(count) {
-      towerPanel.className = BACKGROUND_THRESHOLDS.find(
-        (threshold) => count <= threshold.limit
-      ).className;
-    }
-
-    // Fetch stuck data and build tower
-    async function fetchAndBuildKokeshiTower(objectId) {
+      // Backendlessからデータを取得
       try {
-        const response = await fetch(`${DATABASE_URL}/${objectId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(`https://api.backendless.com/${APP_ID}/${API_KEY}/data/tower/${objectId}`);
+        console.log("API Response:", response); // ここでレスポンスの状態を確認
 
         if (!response.ok) {
-          throw new Error(`Error fetching data: ${response.statusText}`);
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const data = await response.json();
-
-        const kokeshiCount = data.kokeshi_count;
-
-        if (kokeshiCount !== undefined) {
-          buildKokeshiTower(kokeshiCount);
-        } else {
-          console.error("kokeshi_count field is missing in the fetched data.");
-        }
+        console.log("Received data:", data); // データの中身を確認
       } catch (error) {
-        console.error("Failed to fetch kokeshi data:", error);
+        console.error("Error fetching data:", error); // エラーの内容を表示
       }
     }
 
-    // Example usage
-    fetchAndBuildKokeshiTower("791E7404-AC37-4598-9B04-044FD5A2C9F9");
+    // こけしの総数を取得
+    const totalKokeshi = data.kokeshi_count;
+    if (!data.kokeshi_count) {
+      console.error("kokeshi_count is missing:", data);
+    } else {
+      console.log("kokeshi_count:", data.kokeshi_count);
+    }
+
+    // タワーをクリア
+    kokeshiTower.innerHTML = '';
+
+    // こけしの要素を作成 (非表示状態で追加)
+    for (let i = 0; i < totalKokeshi; i++) {
+      const kokeshi = document.createElement('div');
+      kokeshi.classList.add('kokeshi');
+      kokeshi.dataset.index = i; // 各こけしにインデックスを付与
+      kokeshiTower.appendChild(kokeshi);
+    }
+
+    // 初期スクロール位置を最下部に設定
+    towerContainer.scrollTop = towerContainer.scrollHeight;
+
+    // スクロールイベントを登録
+    towerContainer.addEventListener('scroll', () => handleScroll(totalKokeshi));
+
+
+    // 背景をスクロールに応じて変更し、こけしを表示する関数
+    function handleScroll(totalKokeshi) {
+      const towerContainer = document.getElementById('tower-container');
+      const kokeshiTower = document.getElementById('kokeshi-tower');
+      const scrollHeight = towerContainer.scrollHeight - towerContainer.clientHeight;
+      const scrollRatio = towerContainer.scrollTop / scrollHeight;
+
+      // 背景を変更
+      if (scrollRatio < 0.33) {
+        towerContainer.className = 'bg-earth';
+      } else if (scrollRatio < 0.66) {
+        towerContainer.className = 'bg-sky';
+      } else {
+        towerContainer.className = 'bg-space';
+      }
+
+      // 表示するこけしを計算
+      const visibleCount = Math.ceil((towerContainer.scrollTop + towerContainer.clientHeight) / 52); // 1こけしの高さ + margin
+
+      // 遅延表示 (表示範囲内のこけしのみ)
+      const kokeshiElements = kokeshiTower.children;
+      for (let i = 0; i < totalKokeshi; i++) {
+        const kokeshi = kokeshiElements[i];
+        if (i < visibleCount) {
+          kokeshi.classList.add('visible'); // 表示
+        } else {
+          kokeshi.classList.remove('visible'); // 非表示
+        }
+      }
+    }
+
+    // 初期化 (特定の objectId を指定)
+    const OBJECT_ID = "791E7404-AC37-4598-9B04-044FD5A2C9F9"; // 対象の objectId を指定
+    fetchAndBuildKokeshiTower(OBJECT_ID);
 
   </script>
 </body>

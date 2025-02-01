@@ -1,58 +1,60 @@
-/* General styling */
-body {
+/* 基本設定 */
+html, body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
-#tower-panel {
-  height: 100vh;
-  overflow-y: auto;
-  text-align: center;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 20px;
-}
-
-/* Background sections */
-.background-earth {
-  background-image: url('resource/images/ground.png');
-}
-
-.background-tokyo-tower {
-  background-image: url('resource/images/mountain.png');
-}
-
-.background-mt-fuji {
-  background-image: url('resource/images/ozon.png');
-}
-
-.background-space {
-  background-image: url('resource/images/space.png');
-}
-
-/* Kokeshi */
-.kokeshi {
-  width: 25px;
-  height: 50px;
-  background-color: #c48f65;
-  border: 2px solid #8b5a3c;
-  border-radius: 10px;
-  margin: 5px auto;
+/* タワーコンテナ */
+#tower-container {
   position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll; /* 縦スクロールを有効にする */
 }
 
-.kokeshi-face {
-  width: 24px;
-  height: 24px;
-  background-color: #f4d6b0;
-  border-radius: 50%;
-  border: 2px solid #8b5a3c;
+/* 動的背景 */
+#tower-container.bg-earth {
+  background: url('resource/images/ground.png') no-repeat center center;
+  background-size: cover;
+}
+#tower-container.bg-sky {
+  background: url('resource/images/mountain.png') no-repeat center center;
+  background-size: cover;
+}
+#tower-container.bg-space {
+  background: url('resource/images/space.png') no-repeat center center;
+  background-size: cover;
+}
+
+/* タワー */
+#kokeshi-tower {
   position: absolute;
-  top: 5px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* こけし */
+.kokeshi {
+  width: 50px;
+  height: 50px;
+  margin: 2px 0;
+  background-color: #f5c542;
+  border: 2px solid #d47a00;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0; /* 初期状態は非表示 */
+  transform: translateY(20px); /* 下にずらす */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* 表示されたこけし */
+.kokeshi.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
