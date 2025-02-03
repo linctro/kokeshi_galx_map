@@ -36,7 +36,7 @@
 
       // Backendlessからデータを取得
       try {
-        const response = await fetch(`https://api.backendless.com/${APP_ID}/${API_KEY}/data/tower/${objectId}`);
+        const response = await fetch(`https://api.backendless.com/${APP_ID}/${API_KEY}/data/${TABLE_NAME}/${objectId}`);
         console.log("API Response:", response); // ここでレスポンスの状態を確認
 
         if (!response.ok) {
@@ -48,33 +48,28 @@
       } catch (error) {
         console.error("Error fetching data:", error); // エラーの内容を表示
       }
+
+
+      // こけしの総数を取得
+      const totalKokeshi = data.kokeshi_count;
+
+      // タワーをクリア
+      kokeshiTower.innerHTML = '';
+
+      // こけしの要素を作成 (非表示状態で追加)
+      for (let i = 0; i < totalKokeshi; i++) {
+        const kokeshi = document.createElement('div');
+        kokeshi.classList.add('kokeshi');
+        kokeshi.dataset.index = i; // 各こけしにインデックスを付与
+        kokeshiTower.appendChild(kokeshi);
+      }
+
+      // 初期スクロール位置を最下部に設定
+      towerContainer.scrollTop = towerContainer.scrollHeight;
+
+      // スクロールイベントを登録
+      towerContainer.addEventListener('scroll', () => handleScroll(totalKokeshi));
     }
-
-    // こけしの総数を取得
-    const totalKokeshi = data.kokeshi_count;
-    if (!data.kokeshi_count) {
-      console.error("kokeshi_count is missing:", data);
-    } else {
-      console.log("kokeshi_count:", data.kokeshi_count);
-    }
-
-    // タワーをクリア
-    kokeshiTower.innerHTML = '';
-
-    // こけしの要素を作成 (非表示状態で追加)
-    for (let i = 0; i < totalKokeshi; i++) {
-      const kokeshi = document.createElement('div');
-      kokeshi.classList.add('kokeshi');
-      kokeshi.dataset.index = i; // 各こけしにインデックスを付与
-      kokeshiTower.appendChild(kokeshi);
-    }
-
-    // 初期スクロール位置を最下部に設定
-    towerContainer.scrollTop = towerContainer.scrollHeight;
-
-    // スクロールイベントを登録
-    towerContainer.addEventListener('scroll', () => handleScroll(totalKokeshi));
-
 
     // 背景をスクロールに応じて変更し、こけしを表示する関数
     function handleScroll(totalKokeshi) {
